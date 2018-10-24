@@ -2,7 +2,7 @@ This document talks about the necessary steps before running the code. All infor
 
 ## Step 1. Clone the DRLND repository
 
-If you haven't, you can follow the instructions in the [DRLND Github repository](https://github.com/udacity/deep-reinforcement-learning#dependencies) to set up the python environment on your own machine. The detailed instructions can be found in the '''README.md''' file at the root of the depository. By following the instructions, you will install PyTorch, the ML-Agents toolkit, and a few more Python packages necessary to complete the project.
+If you haven't, you can follow the instructions in the [DRLND Github repository](https://github.com/udacity/deep-reinforcement-learning#dependencies) to set up the python environment on your own machine. The detailed instructions can be found in the ```README.md``` file at the root of the depository. By following the instructions, you will install PyTorch, the ML-Agents toolkit, and a few more Python packages necessary to complete the project.
 
 ## Step 2. The Unity Environment
 
@@ -17,4 +17,4 @@ Please unzip the downloaded file, and put whatever you get with the other docume
 
 ## Step 3. Your turn
 
-After previous steps, you can use '''Navigation.ipynb''' to watch the performance of a random agent and a trained agent. You can also modify the files as you with to test the algorithms.
+After previous steps, you can use ```Navigation.ipynb``` to watch the performance of a random agent and a trained agent. You can also modify the files as you with to test the algorithms.
