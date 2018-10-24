@@ -17,7 +17,7 @@ Here is a list for all files in this project:
   * Net.py : 
   
       The .py file which contains the neural network structure.
-  * : Chechpoint.pth
+  * : chechpoint.pth
   
       The .pth file (created by ```torch.save()```) which saves the weights of a trained agent.
   * :
