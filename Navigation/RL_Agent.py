@@ -27,6 +27,10 @@ class Agent():
             state_size (int): dimension of each state
             action_size (int): dimension of each action
             seed (int): random seed
+            lr (float): learning rate for local network
+            tau (float): learning rate for target network
+            gamma (float): decay rate for future rewards
+            prioritized (bollean): decide whether to use prioritized Q-Learning
         """
         self.state_size = state_size
         self.action_size = action_size
