@@ -22,7 +22,7 @@ Here is a list for all files in this project:
       The .pth file (created by ```torch.save()```) which saves the weights of a trained agent. Not using the Dual structure
   * train.py : 
   
-      The .py file which trains the agent.
+      The .py file which contains the function that can be used to train the agent.
   * Navigation_train.ipynb :
   
       The jupyter notebook file I actually used to train the agent.
