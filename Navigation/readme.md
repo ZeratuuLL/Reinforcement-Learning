@@ -26,6 +26,6 @@ Here is a list for all files in this project:
   * Navigation_train.ipynb :
   
       The jupyter notebook file I actually used to train the agent.
-  * Report :
+  * Summary :
   
       A summary of my experiments. Still updating.
