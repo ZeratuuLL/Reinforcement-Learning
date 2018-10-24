@@ -7,25 +7,25 @@ In this implement I did not use the raw pixel inputs. Instead I used a 37-dimens
 Here is a list for all files in this project:
   * Preparation.md : 
   
-  all necessary preparations for this project.
+      all necessary preparations for this project.
   * Navigation.ipynb :
   
-  The jupyter notebook file which provides an example of using this environment. You can also watch the performance of a trained agent with it.
+      The jupyter notebook file which provides an example of using this environment. You can also watch the performance of a trained agent with it.
   * RL_Agent.py : 
   
-  The .py file which contains the code for the agent.
+      The .py file which contains the code for the agent.
   * Net.py : 
   
-  The .py file which contains the neural network structure.
+      The .py file which contains the neural network structure.
   * :
   
-  The .pth file (created by ```torch.save()```) which saves the weights of a trained agent.
+      The .pth file (created by ```torch.save()```) which saves the weights of a trained agent.
   * :
   
-  The .py file which trains the agent.
+      The .py file which trains the agent.
   * :
   
-  The jupyter notebook file I actually used to train the agent.
+      The jupyter notebook file I actually used to train the agent.
   * :
   
-  A summary of my experiments. Still updating.
+      A summary of my experiments. Still updating.
