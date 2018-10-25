@@ -25,7 +25,7 @@ Here is a list for all files in this project:
       The .py file which contains the function that can be used to train the agent.
   * Navigation_train.ipynb :
   
-      The jupyter notebook file I actually used to train the agent. It also contains one experimental result for each algorithm
+      The jupyter notebook file I actually used to train the agent. It also contains the code for training with each algorithm
   * Report.pdf :
   
       A report of my experiments. Still updating.
