@@ -28,4 +28,12 @@ Here is a list for all files in this project:
       The jupyter notebook file I actually used to train the agent. It also contains the code for training with each algorithm
   * Report.pdf :
   
-      A report of my experiments. Still updating.
+      A report of my experiments. Still updating. But I guess not many people will actually read that. So I listed the future interests here   
+  * Future Plan/ On going:
+      Speed up Prioritized DQN
+      
+      Implement Double DQN
+      
+      Implement Rainbow
+      
+      Implement olicy gradient (Working on it)
