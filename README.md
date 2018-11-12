@@ -1,3 +1,4 @@
 # Reinforcement-Learning
 This is a repository where I save my own explorations of reinforcement learning. Here are the brief introductions for the projects.
   * Navigation: A robot walks in a square world collecting yellow banana whose reward is +1 and avoiding blue banana whose reward is -1. Implemented algorithms are original DQN (Deep Q-Learning), Dual-DQN and Prioritized DQN. This is also a part of the [Deep Reinforcement Learning NanoDegree of Udacity](https://www.udacity.com/course/deep-reinforcement-learning-nanodegree--nd893).
+  * Continuous Control: There are three different environments. One thing common among them is that their action spaces are continuous so DQN cannot be applied directly. Please find more detailed information inside this folder. This is also a part of the [Deep Reinforcement Learning NanoDegree of Udacity](https://www.udacity.com/course/deep-reinforcement-learning-nanodegree--nd893).
