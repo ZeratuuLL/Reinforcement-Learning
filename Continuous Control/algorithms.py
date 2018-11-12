@@ -16,9 +16,9 @@ def ddpg(N, env, n_episodes):
     '''
     
     #Some hyper parameters
-    LR = 0.001
-    Gamma = 1
-    Tau = 0.02
+    LR = 0.0001
+    Gamma = 0.99
+    Tau = 0.01
     Batch_size = 64
     Epsilon = 0.001
     
