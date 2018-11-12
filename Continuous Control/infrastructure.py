@@ -85,14 +85,15 @@ class Actor(nn.Module):
         self.action_size = action_size
         self.layers = nn.ModuleList([nn.Linear(dim_in, dim_out) for dim_in, dim_out in zip(dims[:-1], dims[1:])])
         self.layers.append(nn.Linear(dims[-1], action_size))
-        self.out = nn.Softmax(dim=0)
+        self.out = nn.Softmax(dim=1)
         self.policy = policy
         
     def forward(self, x):
         '''Feed forward'''
         
-        for layer in self.layers:
+        for layer in self.layers[:-1]:
             x = F.relu(layer(x))
+        x = self.layers[-1](x)
         if self.policy:
             return self.out(x)
         else:
@@ -100,7 +101,7 @@ class Actor(nn.Module):
     
 class Critic(nn.Module):
     '''Network structure for agent's critic'''
-    def __init__(self, state_size, action_size, hidden=[256,64,16], action=False):
+    def __init__(self, state_size, action_size, hidden=[64,64,16], action=False):
         '''Build Structure
         
         Params
@@ -112,8 +113,8 @@ class Critic(nn.Module):
         super(Critic, self).__init__()
         
         dim = state_size + action*action_size
-        compares = [8*dim, 4*dim, 2*action_size]
-        hidden = [max(x,y) for x, y in zip(hidden, compares)]
+        #compares = [8*dim, 4*dim, 2*action_size]
+        #hidden = [max(x,y) for x, y in zip(hidden, compares)]
         dims = [dim] + hidden
         self.layers = nn.ModuleList([nn.Linear(dim_in, dim_out) for dim_in, dim_out in zip(dims[:-1], dims[1:])])
         self.layers.append(nn.Linear(dims[-1], 1))
