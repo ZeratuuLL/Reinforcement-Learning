@@ -11,7 +11,8 @@ Files:
   * **infrastructure.py**: where I put the codes for networks and replaybuffer
   * **Policy_Agents**: where I put the codes for agents
   * **algorithms.py**: where I save different algorithms
-  * **Reacher-1.py**: Initiate the environment, create agent and run the algorithm
+  * **Reacher.py**: Initiate the environment, create agent and run the algorithm
+Now it supports any number of agents
   
 ## Problems?
-Now the problems is gradient explosion. I made gamma smaller and also used a smaller learning rate now. Let's see what happens
+Now the problems is gradient explosion. I made gamma smaller and also used a smaller learning rate now. Besides, I set a contraint on the gradient's norm (<=1)
