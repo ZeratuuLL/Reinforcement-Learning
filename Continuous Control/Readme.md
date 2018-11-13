@@ -16,3 +16,5 @@ Now it supports any number of agents
   
 ## Problems?
 Now the problems is gradient explosion. I made gamma smaller and also used a smaller learning rate now. Besides, I set a contraint on the gradient's norm (<=1)
+
+I also have some doubts as the rewards. The unit rewards I have seen are 0.01, 0.02, 0.03, 0.04. Need more information about this
