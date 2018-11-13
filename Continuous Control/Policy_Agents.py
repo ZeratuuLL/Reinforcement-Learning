@@ -77,6 +77,7 @@ class DDPG_Agent():
         cirtic_loss = F.mse_loss(observed_rewards, expected_rewards)
         self.optimizer_critic.zero_grad()
         cirtic_loss.backward()
+        torch.nn.utils.clip_grad_norm(self.critic_local.parameters(), 1)
         self.optimizer_critic.step()
         
         #Update actor
@@ -84,11 +85,15 @@ class DDPG_Agent():
         actor_loss = -self.critic_local(torch.cat([states, pred_actions], dim=1)).mean()
         self.optimizer_actor.zero_grad()
         actor_loss.backward()
+        torch.nn.utils.clip_grad_norm(self.actor_local.parameters(), 1)
         self.optimizer_actor.step()
         
         #Update target networks
         self.soft_update(self.actor_local, self.actor_target, self.tau)
         self.soft_update(self.critic_local, self.critic_target, self.tau)
+        
+        #Decrease exploration
+        self.epsilon *= 0.9995
         
     def soft_update(self, local_net, target_net, tau):
         '''Do soft update to target_net'''

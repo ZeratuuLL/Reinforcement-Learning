@@ -2,6 +2,7 @@ import numpy as np
 from collections import deque
 from Policy_Agents import DDPG_Agent
 import torch
+from infrastructure import device
 
 def ddpg(N, env, n_episodes):
     '''Use DDPG algorithm to solve the environment
@@ -16,9 +17,9 @@ def ddpg(N, env, n_episodes):
     '''
     
     #Some hyper parameters
-    LR = 0.0001
-    Gamma = 0.99
-    Tau = 0.01
+    LR = 0.001
+    Gamma = 1
+    Tau = 0.02
     Batch_size = 64
     Epsilon = 0.001
     
@@ -45,35 +46,35 @@ def ddpg(N, env, n_episodes):
     for i in range(1, n_episodes+1):
         
         t = 0                                                      # Record how many steps has gone in this episode
-        reward_history = np.zeros(N+1)                             # Record rewards history within this episode
-        states_history = np.zeros((N+1, state_size))               # Record states history within this episode
-        actions_history = np.zeros((N+1, action_size))             # Record rewards actions within this episode
+        reward_history = np.zeros((N+1,num_agents))                # Record rewards history within this episode
+        states_history = np.zeros((N+1, num_agents, state_size))   # Record states history within this episode
+        actions_history = np.zeros((N+1, num_agents, action_size)) # Record rewards actions within this episode
             
         # reset The environment & save start information
         env_info = env.reset(train_mode=True)[brain_name]        
-        state = env_info.vector_observations[0]
+        state = env_info.vector_observations
         action = agent.act(state)
-        scores = np.zeros(1)
-        states_history[-1,:] = state.copy()
-        actions_history[-1,:] = action.detach().numpy().copy()
+        scores = np.zeros(num_agents)
+        states_history[-1,:,:] = states.copy()
+        actions_history[-1,:,:] = action.detach().numpy().copy()
         
         while True:
             #Get new information about the environment
             env_info = env.step(action.detach().numpy())[brain_name]
-            next_state = env_info.vector_observations[0]
-            reward = env_info.rewards[0]
-            done = env_info.local_done[0]
+            next_state = env_info.vector_observations
+            reward = np.array(env_info.rewards)
+            done = np.array(env_info.local_done).reshape(num_agents,-1)
             #Update reward history
-            reward_history[:-1] = reward_history[1:]
-            reward_history[-1] = reward
+            reward_history[:-1,:] = reward_history[1:,:]
+            reward_history[-1,:] = reward
             scores += reward
             
             #Check whether to save memory
             t += 1
             if t>=N+1: #Have at least N+1 steps now
                 # Save experience into agent's memory
-                temp_rewards = reward_history[:-1]*discount
-                temp_rewards = np.sum(temp_rewards)
+                temp_rewards = reward_history[:-1,:]*discount[:,np.newaxis]
+                temp_rewards = np.sum(temp_rewards, axis=0).reshape(num_agents,-1)
                 agent.memory.add(states_history[0,:].copy(), actions_history[0,:].copy(), temp_rewards,\
                                  next_state, done)
             
@@ -82,17 +83,17 @@ def ddpg(N, env, n_episodes):
                 
             #Save new record
             next_action = agent.act(next_state)
-            states_history[:-1] = states_history[1:]
-            actions_history[:-1] = actions_history[1:]
-            states_history[-1,:] = next_state
-            actions_history[-1,:] = next_action.detach().numpy()
+            states_history[:-1,:,:] = states_history[1:,:,:]
+            actions_history[:-1,:,:] = actions_history[1:,:,:]
+            states_history[-1,:,:] = next_state
+            actions_history[-1,:,:] = next_action.detach().numpy()
             action = next_action
-            if done:
+            if any(done):
                 break
         
-        rewards.append(np.sum(scores))
-        window.append(np.sum(scores))
-        print('\rEpisode {}\t Score of this episode: {:.4f}\tAverage Score: {:.4f}'.format(i, np.sum(scores), np.mean(window)), end='')
+        rewards.append(scores)
+        window.append(scores)
+        print('\rEpisode {}\t Score of this episode: {:.4f}\tAverage Score: {:.4f}'.format(i, np.mean(scores), np.mean(window)), end='')
         if i % 50 ==0:
             print('\nEpisode {}\tAverage Score: {:.4f}'.format(i, np.mean(window)))
         if (np.mean(window)>=30) & (i>=100):
@@ -100,8 +101,14 @@ def ddpg(N, env, n_episodes):
             torch.save(agent.actor_local.state_dict(),'actor_checkpoint.pth')
             torch.save(agent.critic_local.state_dict(),'critic_checkpoint.pth')
             break
+        agent.actor_local.cpu()
+        agent.critic_local.cpu()
+        torch.save(agent.actor_local.state_dict(),'actor_checkpoint_{}.pth'.format(i))
+        torch.save(agent.critic_local.state_dict(),'critic_checkpoint_{}.pth'.format(i))
+        agent.actor_local.to(device)
+        agent.critic_local.to(device)
             
-    print('\nEnvironment not solved!\tAverage Score: {:.4f}'.format(np.mean(window)))
+    print('\nEnvironment not solved!\tAverage Score: {:.4f}'.format(np.mean(np.array(window))))
     agent.actor_local.cpu()
     agent.critic_local.cpu()
     torch.save(agent.actor_local.state_dict(),'actor_checkpoint.pth')

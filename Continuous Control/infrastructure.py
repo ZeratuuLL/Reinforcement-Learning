@@ -79,8 +79,8 @@ class Actor(nn.Module):
         '''
         super(Actor, self).__init__()
         
-        #compares = [8*state_size, 4*state_size, 2*action_size]
-        #hidden = [max(x,y) for x, y in zip(hidden, compares)]
+        compares = [8*state_size, 4*state_size, 2*action_size]
+        hidden = [max(x,y) for x, y in zip(hidden, compares)]
         dims = [state_size] + hidden
         self.action_size = action_size
         self.layers = nn.ModuleList([nn.Linear(dim_in, dim_out) for dim_in, dim_out in zip(dims[:-1], dims[1:])])
@@ -113,8 +113,8 @@ class Critic(nn.Module):
         super(Critic, self).__init__()
         
         dim = state_size + action*action_size
-        #compares = [8*dim, 4*dim, 2*action_size]
-        #hidden = [max(x,y) for x, y in zip(hidden, compares)]
+        compares = [8*dim, 4*dim, 2*action_size]
+        hidden = [max(x,y) for x, y in zip(hidden, compares)]
         dims = [dim] + hidden
         self.layers = nn.ModuleList([nn.Linear(dim_in, dim_out) for dim_in, dim_out in zip(dims[:-1], dims[1:])])
         self.layers.append(nn.Linear(dims[-1], 1))
