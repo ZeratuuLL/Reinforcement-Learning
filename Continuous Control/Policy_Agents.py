@@ -69,6 +69,7 @@ class DDPG_Agent():
         experiences = self.memory.sample()
         states, actions, rewards, target_states, dones = experiences #rewards here are n-step rewards
         pred_actions = self.actor_target(target_states)
+        pred_actions = torch.clamp(pred_actions, min=-1, max=1)
         observed_rewards = self.critic_target(torch.cat([target_states, pred_actions], dim=1))*self.gamma**(n+1)
         observed_rewards = (1-dones)*observed_rewards + rewards
         expected_rewards = self.critic_local(torch.cat([states, actions], dim=1))
@@ -82,6 +83,7 @@ class DDPG_Agent():
         
         #Update actor
         pred_actions = self.actor_local(states)
+        pred_actions = torch.clamp(pred_actions, min=-1, max=1)
         actor_loss = -self.critic_local(torch.cat([states, pred_actions], dim=1)).mean()
         self.optimizer_actor.zero_grad()
         actor_loss.backward()
