@@ -4,7 +4,7 @@ from Policy_Agents import DDPG_Agent
 import torch
 from infrastructure import device
 
-def ddpg(N, env, n_episodes):
+def ddpg(N, env, n_episodes, speed1, speed2, steps, learning_time, batch_size):
     '''Use DDPG algorithm to solve the environment
     This function will not learn from the last N timestamps of each episode
     Here we assume num_agents=1
@@ -18,10 +18,9 @@ def ddpg(N, env, n_episodes):
     
     #Some hyper parameters
     LR = 0.001
-    Gamma = 1
-    Tau = 0.02
-    Batch_size = 64
-    Epsilon = 0.001
+    Gamma = 0.99
+    Tau = 0.001
+    Batch_size = batch_size
     
     #initialize Brain
     brain_name = env.brain_names[0]
@@ -34,14 +33,13 @@ def ddpg(N, env, n_episodes):
     states = env_info.vector_observations
     state_size = states.shape[1]
     print('There are {} agent(s). Each observes a state with length: {}'.format(states.shape[0], state_size))
-    print('The state for the first agent looks like:', states[0])
     
     #Initizalize Agent
     agent = DDPG_Agent(state_size, action_size, learning_rate=LR, gamma=Gamma, tau=Tau, \
-                       batch_size=Batch_size, epsilon=Epsilon)     # Create agent 
+                       batch_size=Batch_size, speed1=speed1, speed2=speed2, num_agents=num_agents)      # Create agent 
     rewards = []                                                   # Record rewards from all episodes
     window = deque(maxlen=100)
-    discount = Gamma**np.arange(N)
+    discount = Gamma**np.arange(N+1)
         
     for i in range(1, n_episodes+1):
         
@@ -55,7 +53,7 @@ def ddpg(N, env, n_episodes):
         state = env_info.vector_observations
         action = agent.act(state)
         scores = np.zeros(num_agents)
-        states_history[-1,:,:] = states.copy()
+        states_history[-1,:,:] = state.copy()
         actions_history[-1,:,:] = action.detach().numpy().copy()
         
         while True:
@@ -73,20 +71,22 @@ def ddpg(N, env, n_episodes):
             t += 1
             if t>=N+1: #Have at least N+1 steps now
                 # Save experience into agent's memory
-                temp_rewards = reward_history[:-1,:]*discount[:,np.newaxis]
+                temp_rewards = reward_history*discount[:,np.newaxis]
                 temp_rewards = np.sum(temp_rewards, axis=0).reshape(num_agents,-1)
-                agent.memory.add(states_history[0,:].copy(), actions_history[0,:].copy(), temp_rewards,\
-                                 next_state, done)
+                for exp in zip(states_history[0,:].copy(), actions_history[0,:].copy(), temp_rewards, next_state, done):
+                        agent.memory.add(exp[0], exp[1], exp[2], exp[3], exp[4])
             
-            if len(agent.memory.memory)>Batch_size:
-                agent.learn(N)
+            if len(agent.memory.memory)>=Batch_size:
+                if t % steps == 0:
+                    for j in range(learning_time):
+                        agent.learn(N)
                 
             #Save new record
             next_action = agent.act(next_state)
             states_history[:-1,:,:] = states_history[1:,:,:]
             actions_history[:-1,:,:] = actions_history[1:,:,:]
-            states_history[-1,:,:] = next_state
-            actions_history[-1,:,:] = next_action.detach().numpy()
+            states_history[-1,:,:] = next_state.copy()
+            actions_history[-1,:,:] = next_action.detach().numpy().copy()
             action = next_action
             if any(done):
                 break
@@ -101,12 +101,13 @@ def ddpg(N, env, n_episodes):
             torch.save(agent.actor_local.state_dict(),'actor_checkpoint.pth')
             torch.save(agent.critic_local.state_dict(),'critic_checkpoint.pth')
             break
-        agent.actor_local.cpu()
-        agent.critic_local.cpu()
-        torch.save(agent.actor_local.state_dict(),'actor_checkpoint_{}.pth'.format(i))
-        torch.save(agent.critic_local.state_dict(),'critic_checkpoint_{}.pth'.format(i))
-        agent.actor_local.to(device)
-        agent.critic_local.to(device)
+        if i % 10 ==0:
+            agent.actor_local.cpu()
+            agent.critic_local.cpu()
+            torch.save(agent.actor_local.state_dict(),'actor_checkpoint_{}.pth'.format(i))
+            torch.save(agent.critic_local.state_dict(),'critic_checkpoint_{}.pth'.format(i))
+            agent.actor_local.to(device)
+            agent.critic_local.to(device)
             
     print('\nEnvironment not solved!\tAverage Score: {:.4f}'.format(np.mean(np.array(window))))
     agent.actor_local.cpu()

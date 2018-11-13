@@ -4,16 +4,22 @@ from collections import namedtuple, deque
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import copy
 
 BATCH_SIZE=64
 gpu = input('Please assign the gpu number: ')
 device = torch.device("cuda:"+gpu if torch.cuda.is_available() else "cpu")
 print('Using device: {}'.format(device))
 
+def hidden_init(layer):
+    fan_in = layer.weight.data.size()[-1]
+    lim = 1. / np.sqrt(fan_in)
+    return (-lim, lim)
+
 class ReplayBuffer:
     """Fixed-size buffer to store experience tuples."""
 
-    def __init__(self, batch_size, seed, buffer_size=10**4):
+    def __init__(self, batch_size, seed, buffer_size=int(1e5)):
         """Initialize a ReplayBuffer object.
 
         Params
@@ -68,7 +74,7 @@ class ReplayBuffer:
 class Actor(nn.Module):
     '''Network structure for agent's actor'''
     
-    def __init__(self, state_size, action_size, hidden=[64,64,16], policy=True):
+    def __init__(self, state_size, action_size, hidden=[400, 300], policy=True):
         '''Build Structure
         
         Params
@@ -78,15 +84,11 @@ class Actor(nn.Module):
         policy (bool): if True, the output will be a softmax layer, otherwise it would be a fully connected layer
         '''
         super(Actor, self).__init__()
-        
-        compares = [8*state_size, 4*state_size, 2*action_size]
-        hidden = [max(x,y) for x, y in zip(hidden, compares)]
-        dims = [state_size] + hidden
-        self.action_size = action_size
+        dims = [state_size] + hidden + [action_size]
         self.layers = nn.ModuleList([nn.Linear(dim_in, dim_out) for dim_in, dim_out in zip(dims[:-1], dims[1:])])
-        self.layers.append(nn.Linear(dims[-1], action_size))
         self.out = nn.Softmax(dim=1)
         self.policy = policy
+        self.reset_parameters()
         
     def forward(self, x):
         '''Feed forward'''
@@ -97,11 +99,18 @@ class Actor(nn.Module):
         if self.policy:
             return self.out(x)
         else:
-            return x
+            return F.tanh(x)
+        
+    def reset_parameters(self):
+        for layer in self.layers[:-1]:
+            layer.weight.data.uniform_(*hidden_init(layer))
+            layer.bias.data.uniform_(*hidden_init(layer))
+        self.layers[-1].weight.data.uniform_(-3e-3, 3e-3)
+        self.layers[-1].bias.data.uniform_(-3e-3, 3e-3)
     
 class Critic(nn.Module):
     '''Network structure for agent's critic'''
-    def __init__(self, state_size, action_size, hidden=[64,64,16], action=False):
+    def __init__(self, state_size, action_size, hidden=[400, 300], action=False):
         '''Build Structure
         
         Params
@@ -111,17 +120,49 @@ class Critic(nn.Module):
         action (bool): if True, the critic takes action as a part of input and return Q(s,a), otherwise returns V(s)
         '''
         super(Critic, self).__init__()
-        
-        dim = state_size + action*action_size
-        compares = [8*dim, 4*dim, 2*action_size]
-        hidden = [max(x,y) for x, y in zip(hidden, compares)]
-        dims = [dim] + hidden
-        self.layers = nn.ModuleList([nn.Linear(dim_in, dim_out) for dim_in, dim_out in zip(dims[:-1], dims[1:])])
-        self.layers.append(nn.Linear(dims[-1], 1))
+        dim = state_size
+        dims = [dim] + hidden + [1]
+        Ins = dims[:-1]
+        Outs = dims[1:]
+        Ins[2] += action_size # Insert actions here, only affect input dimension
+        self.layers = nn.ModuleList([nn.Linear(dim_in, dim_out) for dim_in, dim_out in zip(Ins, Outs)])
+        self.reset_parameters()
     
-    def forward(self, x):
+    def forward(self, states, actions):
         '''Feed forward'''
-
-        for layer in self.layers[:-1]:
+        x = states
+        for layer in self.layers[:2]:
+            x = F.relu(layer(x))
+        x = torch.cat([x, actions],dim=1)
+        for layer in self.layers[2:-1]:
             x = F.relu(layer(x))
         return self.layers[-1](x)
+    
+    def reset_parameters(self):
+        for layer in self.layers[:-1]:
+            layer.weight.data.uniform_(*hidden_init(layer))
+            layer.bias.data.uniform_(*hidden_init(layer))
+        self.layers[-1].weight.data.uniform_(-3e-4, 3e-4)
+        self.layers[-1].bias.data.uniform_(-3e-4, 3e-4)
+    
+class OUNoise:
+    """Ornstein-Uhlenbeck process."""
+
+    def __init__(self, size, seed, mu=0., theta=0.15, sigma=0.2):
+        """Initialize parameters and noise process."""
+        self.mu = mu * np.ones(size)
+        self.theta = theta
+        self.sigma = sigma
+        self.seed = random.seed(seed)
+        self.reset()
+
+    def reset(self):
+        """Reset the internal state (= noise) to mean (mu)."""
+        self.state = copy.copy(self.mu)
+
+    def sample(self):
+        """Update internal state and return it as a noise sample."""
+        x = self.state
+        dx = self.theta * (self.mu - x) + self.sigma * np.array([random.random() for i in range(len(x))])
+        self.state = x + dx
+        return self.state
