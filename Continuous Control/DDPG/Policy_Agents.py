@@ -41,8 +41,8 @@ class DDPG_Agent():
         self.critic_target = Critic(self.state_size, self.action_size, action=True).to(device)
         self.optimizer_actor = optim.Adam(self.actor_local.parameters(), lr=self.lr/10)
         self.optimizer_critic = optim.Adam(self.critic_local.parameters(), lr=self.lr, weight_decay=0.01)
-        self.soft_update(self.actor_local, self.actor_target, 1)
-        self.soft_update(self.critic_local, self.critic_target, 1)
+        #self.soft_update(self.actor_local, self.actor_target, 1)
+        #self.soft_update(self.critic_local, self.critic_target, 1)
         
         #replay buffer
         self.memory = ReplayBuffer(batch_size=self.batch_size, seed=1)
