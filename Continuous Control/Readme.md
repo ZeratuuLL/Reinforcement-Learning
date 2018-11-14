@@ -5,16 +5,6 @@ For **Reacher** we have two versions. Version 1 has only 1 agent and version 2 h
 For **Crawler** 
 Later I will explain this when I get to work on this.
 
-Now I have uploaded the files for [DDPG](https://arxiv.org/abs/1509.02971). For now it does not work. I am not sure where I made a mistake. The learning part and the saving experience part should be correct. So is that my network design? Or the hypermaters? Anyway it's not learning the correct thing. If anyone happens to see this, it would be very nice if you could help me find the bugs.
+Now I have uploaded the files for [DDPG](https://arxiv.org/abs/1509.02971) in the folder which has the same name. For now it does not work. Some details inside. If anyone happens to see this, it would be very nice if you could help me find the bugs.
 
-Files:
-  * **infrastructure.py**: where I put the codes for networks and replaybuffer
-  * **Policy_Agents**: where I put the codes for agents
-  * **algorithms.py**: where I save different algorithms
-  * **Reacher.py**: Initiate the environment, create agent and run the algorithm
-Now it supports any number of agents
-  
-## Problems?
-Now the problems is gradient explosion. I made gamma smaller and also used a smaller learning rate now. Besides, I set a contraint on the gradient's norm (<=1)
 
-I also have some doubts as the rewards. The unit rewards I have seen are 0.01, 0.02, 0.03, 0.04. Need more information about this
