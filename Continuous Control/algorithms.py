@@ -17,7 +17,7 @@ def ddpg(N, env, n_episodes, speed1, speed2, steps, learning_time, batch_size):
     '''
     
     #Some hyper parameters
-    LR = 0.001
+    LR = 0.0001
     Gamma = 0.99
     Tau = 0.001
     Batch_size = batch_size
@@ -27,12 +27,9 @@ def ddpg(N, env, n_episodes, speed1, speed2, steps, learning_time, batch_size):
     brain = env.brains[brain_name]
     env_info = env.reset(train_mode=True)[brain_name]
     num_agents = len(env_info.agents)
-    print('Number of agents:', num_agents)
     action_size = brain.vector_action_space_size
-    print('Size of each action:', action_size)
     states = env_info.vector_observations
     state_size = states.shape[1]
-    print('There are {} agent(s). Each observes a state with length: {}'.format(states.shape[0], state_size))
     
     #Initizalize Agent
     agent = DDPG_Agent(state_size, action_size, learning_rate=LR, gamma=Gamma, tau=Tau, \
@@ -112,6 +109,10 @@ def ddpg(N, env, n_episodes, speed1, speed2, steps, learning_time, batch_size):
     print('\nEnvironment not solved!\tAverage Score: {:.4f}'.format(np.mean(np.array(window))))
     agent.actor_local.cpu()
     agent.critic_local.cpu()
+    agent.actor_target.cpu()
+    agent.critic_target.cpu()
     torch.save(agent.actor_local.state_dict(),'actor_checkpoint.pth')
     torch.save(agent.critic_local.state_dict(),'critic_checkpoint.pth')
+    torch.save(agent.actor_local.state_dict(),'actor_target_checkpoint.pth')
+    torch.save(agent.critic_local.state_dict(),'critic_target_checkpoint.pth')
     return rewards

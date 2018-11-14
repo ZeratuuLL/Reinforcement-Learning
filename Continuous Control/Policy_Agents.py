@@ -70,35 +70,37 @@ class DDPG_Agent():
         self.step += 1
         
         #Some calculation
-        if self.step % self.speed1 == 0:
+        for i in range(self.speed1):
             experiences = self.memory.sample()
             states, actions, rewards, target_states, dones = experiences #rewards here are n-step rewards
             pred_actions = self.actor_target(target_states)
             observed_rewards = self.critic_target(target_states, pred_actions)
-            #observed_rewards = torch.clamp(observed_rewards, min=0, max=100)
+            observed_rewards = torch.clamp(observed_rewards, min=0, max=100)
             observed_rewards *= self.gamma**(n+1)
             observed_rewards = (1-dones)*observed_rewards + rewards
             expected_rewards = self.critic_local(states, actions)
         
             #Update critic
+            experiences = self.memory.sample()
             cirtic_loss = F.mse_loss(observed_rewards, expected_rewards)#*self.num_agents
             self.optimizer_critic.zero_grad()
             cirtic_loss.backward()
             #torch.nn.utils.clip_grad_norm(self.critic_local.parameters(), 1)
             self.optimizer_critic.step()
-        
+        for i in range(self.speed2):
+            experiences = self.memory.sample()
+            states, actions, rewards, target_states, dones = experiences
             #Update actor
             pred_actions = self.actor_local(states)
             actor_loss = -self.critic_local(states, pred_actions).mean()#*self.num_agents
             self.optimizer_actor.zero_grad()
             actor_loss.backward()
-            #torch.nn.utils.clip_grad_norm(self.actor_local.parameters(), 1)
+            torch.nn.utils.clip_grad_norm(self.actor_local.parameters(), 1)
             self.optimizer_actor.step()
         
         #Update target networks
-        if self.step % self.speed2 == 0:
-            self.soft_update(self.actor_local, self.actor_target, self.tau)
-            self.soft_update(self.critic_local, self.critic_target, self.tau)
+        self.soft_update(self.actor_local, self.actor_target, self.tau)
+        self.soft_update(self.critic_local, self.critic_target, self.tau)
         
     def soft_update(self, local_net, target_net, tau):
         '''Do soft update to target_net'''
