@@ -124,17 +124,17 @@ class Critic(nn.Module):
         dims = [dim] + hidden + [1]
         Ins = dims[:-1]
         Outs = dims[1:]
-        Ins[2] += action_size # Insert actions here, only affect input dimension
+        Ins[1] += action_size # Insert actions here, only affect input dimension
         self.layers = nn.ModuleList([nn.Linear(dim_in, dim_out) for dim_in, dim_out in zip(Ins, Outs)])
         self.reset_parameters()
     
     def forward(self, states, actions):
         '''Feed forward'''
         x = states
-        for layer in self.layers[:2]:
+        for layer in self.layers[:1]:
             x = F.relu(layer(x))
         x = torch.cat([x, actions],dim=1)
-        for layer in self.layers[2:-1]:
+        for layer in self.layers[1:-1]:
             x = F.relu(layer(x))
         return self.layers[-1](x)
     

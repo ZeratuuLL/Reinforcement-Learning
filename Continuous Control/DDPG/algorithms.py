@@ -4,7 +4,7 @@ from Policy_Agents import DDPG_Agent
 import torch
 from infrastructure import device
 
-def ddpg(N, env, n_episodes, speed1, speed2, steps, learning_time, batch_size):
+def ddpg(N, env, n_episodes, speed1, speed2, steps, learning_time, batch_size, lr, tau):
     '''Use DDPG algorithm to solve the environment
     This function will not learn from the last N timestamps of each episode
     Here we assume num_agents=1
@@ -17,9 +17,9 @@ def ddpg(N, env, n_episodes, speed1, speed2, steps, learning_time, batch_size):
     '''
     
     #Some hyper parameters
-    LR = 0.0001
+    LR = lr
     Gamma = 0.99
-    Tau = 0.001
+    Tau = tau
     Batch_size = batch_size
     
     #initialize Brain
@@ -80,11 +80,17 @@ def ddpg(N, env, n_episodes, speed1, speed2, steps, learning_time, batch_size):
             break
         if i % 5 ==0:
             agent.actor_local.cpu()
+            agent.actor_target.cpu()
             agent.critic_local.cpu()
+            agent.critic_target.cpu()
             torch.save(agent.actor_local.state_dict(),'actor_checkpoint_{}.pth'.format(i))
             torch.save(agent.critic_local.state_dict(),'critic_checkpoint_{}.pth'.format(i))
+            torch.save(agent.actor_target.state_dict(),'actor_target_checkpoint_{}.pth'.format(i))
+            torch.save(agent.critic_target.state_dict(),'critic_target_checkpoint_{}.pth'.format(i))
             agent.actor_local.to(device)
+            agent.actor_target.to(device)
             agent.critic_local.to(device)
+            agent.critic_target.to(device)
             
     print('\nEnvironment not solved!\tAverage Score: {:.4f}'.format(np.mean(np.array(window))))
     agent.actor_local.cpu()
