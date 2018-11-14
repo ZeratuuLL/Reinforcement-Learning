@@ -76,7 +76,7 @@ class DDPG_Agent():
         pred_actions = self.actor_target(target_states)
         observed_rewards = self.critic_target(target_states, pred_actions)
         observed_rewards *= self.gamma**(n+1)
-        #observed_rewards = torch.clamp(observed_rewards, min=0, max=100)
+        observed_rewards = torch.clamp(observed_rewards, min=0, max=100)
         observed_rewards = (1-dones)*observed_rewards + rewards
         expected_rewards = self.critic_local(states, actions)
         
