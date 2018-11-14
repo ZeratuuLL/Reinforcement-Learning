@@ -1,4 +1,4 @@
 This is a failure. I tried a smaller learning rate, I tried to learn critic multiple steps with learn actor one step. I tried to clip the norm but nothing helps. Th absolutely value of my actor's output rom last hidden layer always goes larger. And thus a vanishing gradient in the actor. I checked, within 10 episodes the action' target network's output will be exactly the same as local network. I will keep trying to fix this problm but I don' give it much hope.
 
 Here ar my attemps:
-  * Move the position of action in critic network from second hidden layer to first hidden layer. This should make the gradient smaller (in absolute value).
+  * Move the position of action in critic network from second hidden layer to first hidden layer. This should make the gradient smaller (in absolute value). **This frees actor to give actions on the margin. But the learning is still very slow. I noticed that the local and target critic gives same estimates at the very end. Will see if this is true for all**
