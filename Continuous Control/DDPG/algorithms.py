@@ -36,55 +36,35 @@ def ddpg(N, env, n_episodes, speed1, speed2, steps, learning_time, batch_size):
                        batch_size=Batch_size, speed1=speed1, speed2=speed2, num_agents=num_agents)      # Create agent 
     rewards = []                                                   # Record rewards from all episodes
     window = deque(maxlen=100)
-    discount = Gamma**np.arange(N+1)
-        
+    t = 0    
     for i in range(1, n_episodes+1):
-        
-        t = 0                                                      # Record how many steps has gone in this episode
-        reward_history = np.zeros((N+1,num_agents))                # Record rewards history within this episode
-        states_history = np.zeros((N+1, num_agents, state_size))   # Record states history within this episode
-        actions_history = np.zeros((N+1, num_agents, action_size)) # Record rewards actions within this episode
-            
         # reset The environment & save start information
         env_info = env.reset(train_mode=True)[brain_name]        
         state = env_info.vector_observations
         action = agent.act(state)
         scores = np.zeros(num_agents)
-        states_history[-1,:,:] = state.copy()
-        actions_history[-1,:,:] = action.detach().numpy().copy()
         
         while True:
             #Get new information about the environment
+            t += 1
             env_info = env.step(action.detach().numpy())[brain_name]
             next_state = env_info.vector_observations
             reward = np.array(env_info.rewards)
             done = np.array(env_info.local_done).reshape(num_agents,-1)
-            #Update reward history
-            reward_history[:-1,:] = reward_history[1:,:]
-            reward_history[-1,:] = reward
+            
             scores += reward
-            
-            #Check whether to save memory
-            t += 1
-            if t>=N+1: #Have at least N+1 steps now
-                # Save experience into agent's memory
-                temp_rewards = reward_history*discount[:,np.newaxis]
-                temp_rewards = np.sum(temp_rewards, axis=0).reshape(num_agents,-1)
-                for exp in zip(states_history[0,:].copy(), actions_history[0,:].copy(), temp_rewards, next_state, done):
-                        agent.memory.add(exp[0], exp[1], exp[2], exp[3], exp[4])
-            
+        
+            # Save experience into agent's memory
+            for exp in zip(state, action, reward, next_state, done):
+                agent.memory.add(exp[0], exp[1], exp[2], exp[3], exp[4])
             if len(agent.memory.memory)>=Batch_size:
                 if t % steps == 0:
                     for j in range(learning_time):
-                        agent.learn(N)
+                        agent.learn(0)
                 
             #Save new record
-            next_action = agent.act(next_state)
-            states_history[:-1,:,:] = states_history[1:,:,:]
-            actions_history[:-1,:,:] = actions_history[1:,:,:]
-            states_history[-1,:,:] = next_state.copy()
-            actions_history[-1,:,:] = next_action.detach().numpy().copy()
-            action = next_action
+            action = agent.act(next_state)
+            state = next_state.copy()
             if any(done):
                 break
         
@@ -98,7 +78,7 @@ def ddpg(N, env, n_episodes, speed1, speed2, steps, learning_time, batch_size):
             torch.save(agent.actor_local.state_dict(),'actor_checkpoint.pth')
             torch.save(agent.critic_local.state_dict(),'critic_checkpoint.pth')
             break
-        if i % 10 ==0:
+        if i % 5 ==0:
             agent.actor_local.cpu()
             agent.critic_local.cpu()
             torch.save(agent.actor_local.state_dict(),'actor_checkpoint_{}.pth'.format(i))
