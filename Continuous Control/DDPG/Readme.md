@@ -14,6 +14,8 @@ Here are my attemps:
   
   * I don't think that works. The two critics get close (within 1% error) within 10 episodes. And the learning is ruined. So I think this is not a good idea. But the actors is always learning, which is great! What's more, I found that the critics are actually both learning but close to each other. But sometimes they give negative estimates. **Learning rate set back (0.01 --> 0.0001) an set tau (soft update parameter) smaller (0.001 --> 0.0001)**
   
-  * This destroy the learning process... Turning the tau back **(0.0001 --> 0.001)** It's learning again. BTW **(lr=tau=0.001)** is unstable, I have seen it succeeded as well as failed. This time it seems good. The local and target networks are somehow different not. **Next: do not initialize local and target networks with same weights.**
+  * This destroy the learning process... Turning the tau back **(0.0001 --> 0.001)** It's learning again. BTW **(lr=tau=0.001)** is unstable, I have seen it succeeded as well as failed. This time it seems good. The local and target networks are somehow different not. **Next: force the critic target network to output none-negative values**
   
-  * Now my connection to server is down. Waiting for updates.
+  * This makes the critics predict positive values within 5 episodes, which is good. The actors are still going to the margins, but much slower. Not the problems should be with the critics. I noticed that the prediction values of both critics are always increasing. Is that increasing too slow that my agent fails to learn? **Next: do not initialize local and target networks with same weights.**
+  
+  
