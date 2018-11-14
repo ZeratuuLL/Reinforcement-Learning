@@ -7,4 +7,4 @@ Here ar my attemps:
   
   * I don't think that works. The two critics get close (within 1% error) within 10 episodes. And the learning is ruined. So I think this is not a good idea. But the actors is always learning, which is great! What's more, I found that the critics are actually both learning but close to each other. But sometimes they give negative estimates. **Learning rate set back (0.01 --> 0.0001) an set tau (soft update parameter) smaller (0.001 --> 0.0001)**
   
-  * This destroy the learning process... Turning the tau back **(0.0001 --> 0.001)** It's learning again. BTW **(lr=tau=0.001)** doesn't work (I only tried twice for 20 episodes). **Next: do not initialize local and target networks with same weights.**
+  * This destroy the learning process... Turning the tau back **(0.0001 --> 0.001)** It's learning again. BTW **(lr=tau=0.001)** is unstable, I have seen it succeeded as well as failed. **Next: do not initialize local and target networks with same weights.**
