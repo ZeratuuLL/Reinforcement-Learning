@@ -18,4 +18,5 @@ Here are my attemps:
   
   * This makes the critics predict positive values within 5 episodes, which is good. The actors are still going to the margins, but much slower. Not the problems should be with the critics. I noticed that the prediction values of both critics are always increasing. Is that increasing too slow that my agent fails to learn? **Next: do not initialize local and target networks with same weights.**
   
+  * This is a bad idea. **Return to the original version and train with a longer period.**
   
