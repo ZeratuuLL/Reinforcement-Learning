@@ -18,7 +18,7 @@ Here are my attemps:
   
   * This makes the critics predict positive values within 5 episodes, which is good. The actors are still going to the margins, but much slower. Not the problems should be with the critics. I noticed that the prediction values of both critics are always increasing. Is that increasing too slow that my agent fails to learn? **Next: do not initialize local and target networks with same weights.**
   
-  * This is a bad idea. **Return to the original version and train with a longer period.**
+  * This is a bad idea. **Return to the original version and train with a longer period (50 --> 200).**
   
   * Yes, a larger number of training episodes did bring me an improvement. At around 70 episodes the performance boosted a lot and get stablized. I noticed that the critic network is still learning. Perhaps we still need an even longer time to train. **Perhaps improving the critics multiple times will also help. But I will not try this at present. Next: 2000 episodes training.**
   
