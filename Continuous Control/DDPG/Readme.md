@@ -20,3 +20,5 @@ Here are my attemps:
   
   * This is a bad idea. **Return to the original version and train with a longer period.**
   
+  * Yes, a larger number of training episodes did bring me an improvement. At around 70 episodes the performance boosted a lot and get stablized. I noticed that the critic network is still learning. Perhaps we still need an even longer time to train. **Perhaps improving the critics multiple times will also help. But I will not try this at present. Next: 2000 episodes training.**
+  
