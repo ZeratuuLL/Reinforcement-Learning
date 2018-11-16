@@ -22,3 +22,8 @@ Here are my attemps:
   
   * Yes, a larger number of training episodes did bring me an improvement. At around 70 episodes the performance boosted a lot and get stablized. I noticed that the critic network is still learning. Perhaps we still need an even longer time to train. **Perhaps improving the critics multiple times will also help. But I will not try this at present. Next: 2000 episodes training.**
   
+  * I do not expect much more from this. I see the critics' predictions no longer increasing at aroung 500 episodes. I am thinking for the following:
+    * Making replaybuffer larger. Now it's 1e5, and each episode we accumulate 20000 experiences. So we are only remembering past 5 episodes. I will make this number to be 1e6 so we can remember 50 episodes.
+    * Try to use different samples to update actors and critics. If this doesn't hurt we can try to update actors/critics with different times and different samples. At the same time, we can choose to learn after several timesteps. For example, learn actor 3 times, critics 5 times after every 5 timesteps.
+    * **Next: Use different samples**
+  
