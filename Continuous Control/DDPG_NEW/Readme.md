@@ -6,3 +6,4 @@ Files:
   * **agents.py**: Where I put the agent for DDPG algorithm
   * **DDPG.py**: The file that can be called on a server to process the training.
   
+If you find any bugs, please kindly let me know. I would really appreciate that!
