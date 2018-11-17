@@ -27,3 +27,6 @@ Here are my attemps:
     * Try to use different samples to update actors and critics. If this doesn't hurt we can try to update actors/critics with different times and different samples. At the same time, we can choose to learn after several timesteps. For example, learn actor 3 times, critics 5 times after every 5 timesteps.
     * **Next: Use different samples**
   
+  * I think that somehow hurts. Not a surprise. **Next: set replaybuffer larger**
+  
+  * **Next: set learning rate for actor smaller(0.1 if critic --> 0.01 of critic)**
