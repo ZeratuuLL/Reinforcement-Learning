@@ -30,3 +30,5 @@ Here are my attemps:
   * I think that somehow hurts. Not a surprise. I will change that back now. **Next: set replaybuffer larger**
   
   * **Next: set learning rate for actor smaller(0.1 if critic --> 0.01 of critic)**
+  
+  * That is stupid. Changing that back. Someone said that adding batch normalization after first hidden layer will be helpful. **Trying**
