@@ -7,3 +7,14 @@ Files:
   * **DDPG.py**: The file that can be called on a server to process the training.
   
 If you find any bugs, please kindly let me know. I would really appreciate that!
+
+
+## History:
+
+  * Now I have added batch normalization to the activation of first hidden layer. This works great. The hyper parameters are: 
+    * batch size: 128
+    * learning rate for actor: 0.0001
+    * learning rate for critic: 0.001
+    * soft update parameter: 0.001
+    * replaybuffer size: 1e6
+    
