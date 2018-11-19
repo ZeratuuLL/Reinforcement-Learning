@@ -120,7 +120,6 @@ class DDPG_Agent:
                 dones = env_info.local_done
                 scores = env_info.rewards
                 episodic_reward += np.array(scores)
-                rewards.append(scores)
                 for state, action, score, next_state, done in zip(states, actions, scores, next_states, dones):
                     self.memory.add(state, action, score, next_state, done)
                 t += 1
@@ -136,6 +135,7 @@ class DDPG_Agent:
                 states = next_states
                 actions = self.act(states)
             score_window.append(np.mean(episodic_reward))
+            rewards.append(episodic_reward)
             
             print('\rEpisode {}. Total score for this episode: {:.4f}, average score {:.4f}'.format(i, np.mean(episodic_reward),np.mean(score_window)),end='')
             if i % 100 == 0:
@@ -153,5 +153,5 @@ class DDPG_Agent:
                 self.actor_target.to(device)
                 self.critic_target.to(device)
         
-        np.save(np.array(rewards), './offline/offline_rewards')
+        np.save(np.array(rewards), './offline/offline_rewards.npy')
             
