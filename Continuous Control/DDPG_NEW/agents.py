@@ -153,5 +153,5 @@ class DDPG_Agent:
                 self.actor_target.to(device)
                 self.critic_target.to(device)
         
-        np.save(np.array(rewards), './offline/offline_rewards.npy')
+        np.save('./offline/offline_rewards.npy',np.array(rewards))
             
