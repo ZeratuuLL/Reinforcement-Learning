@@ -17,4 +17,5 @@ If you find any bugs, please kindly let me know. I would really appreciate that!
     * learning rate for critic: 0.001
     * soft update parameter: 0.001
     * replaybuffer size: 1e6
+    * $\gamma$: 0.99
     
