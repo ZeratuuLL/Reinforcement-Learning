@@ -54,8 +54,11 @@ class DDPG_Agent:
         self.noise = OUNoise(size=self.action_size, seed=random.randint(1, self.batch_size))
         
     def act(self, state):
-        state = torch.tensor(state, dtype=torch.float)
-        action = self.actor_local(state).detach().numpy()
+        state = torch.tensor(state, dtype=torch.float).to(device)
+        self.actor_local.eval()
+        with torch.no_grad():
+            action = self.actor_local(state).detach().cpu().numpy()
+        self.actor_local.train()
         noise = self.noise.sample()
         action += noise
         action = np.clip(action, -1, 1)
@@ -126,11 +129,15 @@ class DDPG_Agent:
                     if t % self.step == 0:
                         for _ in range(self.learning_time):
                             self.learn()
+                
+                if any(dones):
+                    break
                             
                 states = next_states
                 actions = self.act(states)
+            score_window.append(np.mean(episodic_reward))
             
-            print('\rTotal score for this episode: {:.4f}, average score {:.4f}'.format(np.mean(episodic_reward),np.mean(score_window)),end='')
+            print('\rEpisode {}. Total score for this episode: {:.4f}, average score {:.4f}'.format(i, np.mean(episodic_reward),np.mean(score_window)),end='')
             if i % 100 == 0:
                 print('\n')
                 self.actor_local.cpu()
@@ -146,5 +153,5 @@ class DDPG_Agent:
                 self.actor_target.to(device)
                 self.critic_target.to(device)
         
-        np.save(rewards, './offline/offline_rewards')
+        np.save(np.array(rewards), './offline/offline_rewards')
             

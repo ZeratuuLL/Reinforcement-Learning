@@ -6,8 +6,7 @@ import numpy as np
 import random
 import copy
 
-gpu= input('Please number of GPU: ')
-device = torch.device("cuda:"+gpu if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('Using device {}'.format(device))
 
 class ReplayBuffer:
@@ -62,10 +61,11 @@ class Actor(nn.Module):
         self.fc1 = nn.Linear(state_size, hidden[0])
         self.fc2 = nn.Linear(hidden[0], hidden[1])
         self.fc3 = nn.Linear(hidden[1], action_size)
+        self.bn1 = nn.BatchNorm1d(hidden[0])
         self.initialize()
         
     def forward(self, x):
-        x = F.relu(self.fc1(x))
+        x = self.bn1(F.relu(self.fc1(x)))
         x = F.relu(self.fc2(x))
         x = F.tanh(self.fc3(x))
         return x
@@ -85,10 +85,11 @@ class Critic1(nn.Module):
         self.fc1 = nn.Linear(state_size, hidden[0])
         self.fc2 = nn.Linear(hidden[0]+action_size, hidden[1])
         self.fc3 = nn.Linear(hidden[1], 1)
+        self.bn1 = nn.BatchNorm1d(hidden[0])
         self.initialize()
     
     def forward(self, state, action):
-        x = F.relu(self.fc1(state))
+        x = self.bn1(F.relu(self.fc1(state)))
         x = torch.cat([x, action], dim=1)
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
@@ -109,10 +110,11 @@ class Critic2(nn.Module):
         self.fc1 = nn.Linear(state_size, hidden[0])
         self.fc2 = nn.Linear(hidden[0], hidden[1])
         self.fc3 = nn.Linear(hidden[1]+action_size, 1)
+        self.bn1 = nn.BatchNorm1d(hidden[0])
         self.initialize()
     
     def forward(self, state, action):
-        x = F.relu(self.fc1(state))
+        x = self.bn1(F.relu(self.fc1(state)))
         x = F.relu(self.fc2(x))
         x = torch.cat([x, action], dim=1)
         x = self.fc3(x)
