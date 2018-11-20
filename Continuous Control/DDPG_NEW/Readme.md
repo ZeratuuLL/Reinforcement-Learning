@@ -18,4 +18,6 @@ If you find any bugs, please kindly let me know. I would really appreciate that!
     * soft update parameter: 0.001
     * replaybuffer size: 1e6
     * $\gamma$: 0.99
+   
+  * Instead of update networks once every timestep, I tried to update them 10 times every 20 timestep. It's still learning after 1000 episodes. Trying 2000.
     
