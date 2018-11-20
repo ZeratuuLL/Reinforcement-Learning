@@ -138,7 +138,7 @@ class DDPG_Agent:
             rewards.append(episodic_reward)
             
             print('\rEpisode {}. Total score for this episode: {:.4f}, average score {:.4f}'.format(i, np.mean(episodic_reward),np.mean(score_window)),end='')
-            if i % 100 == 0:
+            if i % 200 == 0:
                 print('\n')
                 self.actor_local.cpu()
                 self.critic_local.cpu()
