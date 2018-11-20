@@ -62,11 +62,12 @@ class Actor(nn.Module):
         self.fc2 = nn.Linear(hidden[0], hidden[1])
         self.fc3 = nn.Linear(hidden[1], action_size)
         self.bn1 = nn.BatchNorm1d(hidden[0])
+        self.bn2 = nn.BatchNorm1d(hidden[1])
         self.initialize()
         
     def forward(self, x):
         x = self.bn1(F.relu(self.fc1(x)))
-        x = F.relu(self.fc2(x))
+        x = self.bn2(F.relu(self.fc2(x)))
         x = F.tanh(self.fc3(x))
         return x
     
