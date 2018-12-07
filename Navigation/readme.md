@@ -4,6 +4,13 @@ Here there is only one agent navigating itself towards yellow bananas, which giv
 
 In this implement I did not use the raw pixel inputs. Instead I used a 37-dimension state information provided by the environment, containing the agent's velocity, along with ray-based perception of objects around the agent's forward direction. The agent learns to get higher reward with this information. This problem is considered solved if the agent could get an average reward larger than 13 over a consecutive 100 episodes.
 
+For downloading the agents, here are the options:
+  * [Linux](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux.zip)
+  * [MaxOSX](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana.app.zip)
+  * [Windows 32-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86.zip)
+  * [Windows 64-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86_64.zip)
+  * [Headless mode](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux_NoVis.zip), which you will need if you want to train on a remote server
+
 Here is a list for all files in this project:
   * Preparation.md : 
   
