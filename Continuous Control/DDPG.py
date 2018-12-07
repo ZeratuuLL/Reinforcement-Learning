@@ -3,6 +3,21 @@ from agents import DDPG_Agent
 import numpy as np
 import argparse
 
+'''
+This is an instruction for passing parameters:
+\path\ should be directed to the environment file you want to use.
+The whole training process contains \n_episode\ episodes, after every \steps\ timesteps the agent enter study process
+for \learning_time\ times. 
+
+In each study process, a mini-batch with size \batch_size\ will be sampled from the replaybuffer, then the critic local network will be updated \speed1\ times. The actor local network will be updated \speed2\ times. In the end of each study the target network moves forward to local networks with parameter \tau\: 
+
+target = (1-\tau\)*target + \tau\*local
+
+The learning rate for actor and critic are \learning_rate1\ and \learning_rate2\ respectively. 
+
+As for critic's structure, \critic\=1 means the action is inserted in the first hidden layer, while \critic\=2 will introduce the action in second hidden layer.
+'''
+
 parser = argparse.ArgumentParser(description='Parameters for Continuous Control')
 parser.add_argument('-n', '--n_episode', type=int,help='Input the number of episodes you want')
 parser.add_argument('-p', '--path', type=str,help='the path of environment file' )
