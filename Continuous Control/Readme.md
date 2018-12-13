@@ -20,16 +20,27 @@ Version 2:
   * [Windows 64-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Windows_x86_64.zip)
   * [Headless mode](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Linux_NoVis.zip), which is necessary if the training is on a remote server
   
-### Folders
+### Preparations
 
-In the DDPG folder you can find the some plots and a report which should help you understand the result and my findings in implementing DDPG algorithm.
+To watch the performance of this agent, please go into **DDPG** folder and read the detailed instructions in **show.ipynb**. That notebook should help you see the skills of a trained agent.
 
-### .py files
-  * **infrasturctures.py** contains some basic ingredients for the experiment, including networks, noise generator, replaybuffer and so on
-  * **DDPG.py** is the file you can use to train the agent. Please pass in parameters follow the descriptions in the file
-  * **agents.py** contains codes for different kind of agents. The agents are defined as class. They can initiailze themselves, take actions, learn from past experiments and train themselves. For now there is only a DDPG agent. 
+To train the agent yourself, please first make sure you have the following files:
+  * the environment file (see links above)
+  * all .py files in this page
+Then read the explanation of parameters in **DDPG.py** to understand what command you should use to train the agent. For me I used
+```python
+```
+to train on my remote server.
 
 ## Crawler
 
 Later I will explain this when I get to work on this.
 
+## Folders
+
+In the **DDPG** folder you can find the some plots and a report which should help you understand the result and my findings in implementing DDPG algorithm.
+
+## .py files
+  * **infrasturctures.py** contains some basic ingredients for the experiment, including networks, noise generator, replaybuffer and so on
+  * **DDPG.py** is the file you can use to train the agent. Please pass in parameters follow the descriptions in the file
+  * **agents.py** contains codes for different kind of agents. The agents are defined as class. They can initiailze themselves, take actions, learn from past experiments and train themselves. For now there is only a DDPG agent. 
