@@ -29,7 +29,7 @@ To train the agent yourself, please first make sure you have the following files
   * all .py files in this page
 Then read the explanation of parameters in **DDPG.py** to understand what command you should use to train the agent. For me I used
 ```python
-python './Reinforcement_Learning/new_Continuous_Control/DDPG.py' -p './envs/Reacher-20/Reacher' -c 2 -s1 1 -s2 1 -s3 20 -l 10 -lr1 0.0001 -lr2 0.001 -b 128 -t 0.001 -n 1500
+python './Reinforcement_Learning/new_Continuous_Control/DDPG.py' -p './envs/Reacher-20/Reacher' -c 1 -s1 1 -s2 1 -s3 20 -l 10 -lr1 0.0001 -lr2 0.001 -b 128 -t 0.001 -n 1500
 ```
 to train on my remote server.
 
