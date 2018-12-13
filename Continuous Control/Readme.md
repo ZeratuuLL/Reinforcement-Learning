@@ -4,6 +4,8 @@ Files in this repository are related to two Unity environments. [Reacher](https:
 
 For **Reacher** we have two versions. Version 1 has only 1 agent and version 2 has 20. All the agents are exactly the same. They have a double-jointed which can move to target locations. And the goal is to move it's 'hand' to the goal location, and keep it there. The goal location moves continuously around the agent with some constant speed randomly set at the beginning of each episode. The reward is strange, but most time when the 'hand' is in the target area, it wil receive a reward +0.04, also with a small amount of +0.01, +0.02 and +0.03. Each episode there are 1000 steps. The benchmark for this environment is 30.
 
+In this repository there is a file called **Reacher_Report.pdf**. In this document I have record the general idea as well as the details for this experiment. Please read it for more details about my experiment.
+
 ### Download Environment
 
 Version 1:
@@ -19,7 +21,7 @@ Version 2:
   * [Windows 32-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Windows_x86.zip)
   * [Windows 64-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Windows_x86_64.zip)
   * [Headless mode](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Linux_NoVis.zip), which is necessary if the training is on a remote server
-  
+  and
 ### Preparations
 
 To watch the performance of this agent, please go into **DDPG** folder and read the detailed instructions in **show.ipynb**. That notebook should help you see the skills of a trained agent.
@@ -39,7 +41,7 @@ Later I will explain this when I get to work on this.
 
 ## Folders
 
-In the **DDPG** folder you can find the some plots and a report which should help you understand the result and my findings in implementing DDPG algorithm.
+In the **DDPG** folder you can find the some plots which should help you understand the result and my findings in implementing DDPG algorithm. The saved weights for the trained agent is also there.
 
 ## .py files
   * **infrasturctures.py** contains some basic ingredients for the experiment, including networks, noise generator, replaybuffer and so on
