@@ -1,6 +1,8 @@
 This repository contains file realted two environments. [Tennis](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#tennis) and Soccer in [this page](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#tennis). Notice that they are not identical but mostly the same.
 
-To run the python source codes or jupyter notebook, you need to first set up an environment because it uses an older edition Unity API. You can follow the instructions [here](https://github.com/udacity/deep-reinforcement-learning#dependencies).
+## Some prerequisites
+
+To run the python source codes or jupyter notebook, you need to first set up an environment because it uses an \textbf{older} edition Unity API. You can follow the instructions [here](https://github.com/udacity/deep-reinforcement-learning#dependencies).
 
 ## Tennis
 ### Environment Introduction
