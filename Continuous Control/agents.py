@@ -1,11 +1,22 @@
 import torch
 import torch.nn
 import torch.nn.functional as F
-from infrastructures import Actor, Critic1, Critic2, ReplayBuffer, OUNoise, device
+from infrastructures import Actor, Critic, ReplayBuffer, OUNoise, device
 import torch.optim as optim
 import numpy as np
 import random
+import math
 from collections import deque
+from torch.utils.data import TensorDataset, DataLoader
+
+
+###############################################
+#                                             #
+#                                             #
+#                 DDPG Agent                  #
+#                                             #
+#                                             #
+###############################################   
 
 class DDPG_Agent:
     
@@ -39,12 +50,8 @@ class DDPG_Agent:
         #Initialize agent (networks, replyabuffer and noise)
         self.actor_local = Actor(self.state_size, self.action_size).to(device)
         self.actor_target = Actor(self.state_size, self.action_size).to(device)
-        if critic==1:
-            self.critic_local = Critic1(self.state_size, self.action_size).to(device)
-            self.critic_target = Critic1(self.state_size, self.action_size).to(device)
-        else:
-            self.critic_local = Critic2(self.state_size, self.action_size).to(device)
-            self.critic_target = Critic2(self.state_size, self.action_size).to(device)
+        self.critic_local = Critic(self.state_size, self.action_size).to(device)
+        self.critic_target = Critic(self.state_size, self.action_size).to(device)
         self.soft_update(self.actor_local, self.actor_target, 1)
         self.soft_update(self.critic_local, self.critic_target, 1)
         self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=self.lr1)
@@ -60,7 +67,7 @@ class DDPG_Agent:
             action = self.actor_local(state).detach().cpu().numpy()
         self.actor_local.train()
         noise = self.noise.sample()
-        action += noise/np.sqrt(i)
+        action += noise/math.sqrt(i)
         action = np.clip(action, -1, 1)
         return action
         
@@ -147,4 +154,156 @@ class DDPG_Agent:
         self.critic_local.cpu()
         torch.save(self.actor_local.state_dict(),'./offline/actor_checkpoint.pth')
         torch.save(self.critic_local.state_dict(),'./offline/critic_checkpoint.pth')
+
+
+###############################################
+#                                             #
+#                                             #
+#                  PPO Agent                  #
+#                                             #
+#                                             #
+###############################################   
+
+class PPOAgent(object):
+    
+    def __init__(self, environment, brain_name, policy_network, optimizier, config):
+        self.config = config
+        self.hyperparameters = config['hyperparameters']
+        self.network = policy_network
+        self.optimizier = optimizier
+        self.total_steps = 0
+        self.all_rewards = np.zeros(config['environment']['number_of_agents'])
+        self.episode_rewards = []
+        self.environment = environment
+        self.brain_name = brain_name
+        self.device = config['pytorch']['device']
+        self.batch_number = self.hyperparameters['mini_batch_number']
+        self.learning_time = self.hyperparameters['optimization_epochs']
+        
+        self.gamma = self.hyperparameters['discount_rate']
+        self.tau = self.hyperparameters['tau']
+        self.eps = self.hyperparameters['ppo_clip']
+
+    def learn(self, states, actions, log_probs_old, advantages, returns):
+        '''
+        Create a dataset with the input data and do several time mini-batch learning
+        '''
+        mydata = TensorDataset(states, actions, log_probs_old, advantages, returns)
+        Loader = DataLoader(mydata, batch_size = states.size(0) // self.batch_number, shuffle = True)
+        
+        for i in range(self.learning_time):
+            for sampled_states, sampled_actions, sampled_log_probs, sampled_advantages, sampled_returns in iter(Loader):
+                sampled_advantages = sampled_advantages.to(self.device)
+                _, new_log_probs, entropy_loss, values = self.network(sampled_states, sampled_actions.to(self.device))
+                ratio = (new_log_probs - sampled_log_probs.to(self.device)).exp()
+                obj = ratio * sampled_advantages
+                obj_clipped = ratio.clamp(1.0 - self.eps, 1.0 + self.eps) * sampled_advantages
+                policy_loss = -torch.min(obj, obj_clipped).mean(0)
+                
+                value_loss = 0.5 * (sampled_returns.to(self.device) - values).pow(2).mean()
+                
+                self.optimizier.zero_grad()
+                (policy_loss + value_loss).backward()
+                torch.nn.utils.clip_grad_norm_(self.network.parameters(), self.hyperparameters['gradient_clip'])
+                self.optimizier.step()
+
+    def step(self):
+        '''
+        This function does the following things:
+            1. collects the trajectories from one episode with a given length
+            2. calculates the advantage functions and the target values for critic
+            3. goes into learning step
+            4. returns episodic rewards
+        '''
+        
+        #Initialize
+        self.episode_rewards = []
+        hyperparameters = self.hyperparameters
+
+        env_info = self.environment.reset(train_mode=True)[self.brain_name]    
+        states = env_info.vector_observations
+        states_history = []
+        values_history = []
+        actions_history = []
+        rewards_history = []
+        log_probs_history = []
+        dones_history = []
+        
+        #Collect trajectories
+        for _ in range(hyperparameters['rollout_length']):
+            actions, log_probs, _, values = self.network(states)
+            env_info = self.environment.step(actions.cpu().detach().numpy())[self.brain_name]
+            next_states = env_info.vector_observations
+            rewards = env_info.rewards
+            terminals = np.array([1 if t else 0 for t in env_info.local_done])
+            self.all_rewards += rewards
+            
+            for i, terminal in enumerate(terminals):
+                if terminals[i]:
+                    self.episode_rewards.append(self.all_rewards[i])
+                    self.all_rewards[i] = 0
+                    
+            states_history.append(torch.tensor(states, dtype=torch.float))
+            values_history.append(values.detach().cpu())
+            actions_history.append(actions.detach().cpu())
+            log_probs_history.append(log_probs.detach().cpu())
+            rewards_history.append(torch.tensor(rewards, dtype=torch.float))
+            dones_history.append(torch.tensor(terminals, dtype=torch.float))                    
+            
+            states = next_states
+        
+        #Calculate advantage and returns
+        Advantages = []
+        advantages = 0
+        Returns = []
+        returns = 0
+        for i in reversed(range(len(states_history) - 1)):
+            returns = rewards_history[i] + (1-dones_history[i])*returns*self.gamma
+            Returns.append(returns.view(-1))
+            states = states_history[i]
+            values = values_history[i]
+            next_states = states_history[i+1]
+            next_values = values_history[i+1]
+            delta = rewards_history[i].view(-1,1) + (1-dones_history[i].view(-1,1))*self.gamma*next_values - values
+            advantages = advantages*self.gamma*self.tau*(1-dones_history[i].view(-1,1)) + delta
+            Advantages.append(advantages.view(-1))
+        Advantages.reverse()
+        Advantages = torch.stack(Advantages).detach()
+        Advantages = Advantages.view(-1,1)
+        Returns.reverse()
+        Returns = torch.stack(Returns).detach()
+        Returns = Returns.view(-1,1)
+            
+        states = torch.cat(states_history[:-1], 0)
+        actions = torch.cat(actions_history[:-1], 0)
+        log_probs_old = torch.cat(log_probs_history[:-1], 0)
+        advantages = Advantages
+        returns = Returns
+
+        advantages = (advantages - advantages.mean()) / advantages.std()
+        
+        #do the updates
+        self.learn(states, actions, log_probs_old, advantages, returns)
+        return(np.mean(self.episode_rewards))
+        
+    def train(self, n_episodes):
+        '''
+        This function trains the agent with given number of episodes, in each episode:
+            calls  agent.step() to conduct learning
+            collects episodic rewards and output some information
+        Finally returns the rewards data
+        '''
+        rewards = []
+        score_window = deque(maxlen=100)
+        for i in range(1, 1+n_episodes):
+            episodic_reward = self.step()
+            rewards.append(episodic_reward)
+            score_window.append(episodic_reward)
+            
+            print('\rEpisode {}. Total score for this episode: {:.4f}, average score {:.4f}'.format(i, np.mean(episodic_reward),np.mean(score_window)),end='')
+            if i % 100 == 0:
+                print('')
+                
+        np.save('offline/rewards_history.npy', np.array(rewards))
+        torch.save(self.network.state_dict(),'./offline/PPO_Network.pth')
             
