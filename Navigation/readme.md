@@ -1,4 +1,4 @@
-This is a small project which uses an simplified version of the Banana Collector on [Unity ML-Agents Giuhub page](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#banana-collector). They are NOT identical.
+This is a small project which uses an simplified version of the Banana Collector on [Unity ML-Agents Giuhub page](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#banana-collector). They are **NOT** identical.
 
 Here there is only one agent navigating itself towards yellow bananas, which give +1 reward, an also avoiding blue ones, which give -1 reward. The agent is allowed for in total 300 actions. Including moving forward, backward and turning left and right.
 
@@ -20,7 +20,7 @@ Here is a list for all files in this project:
       The jupyter notebook file which provides an example of using this environment. You can also watch the performance of a trained agent with it.
   * RL_Agent.py : 
   
-      The .py file which contains the code for the agent.
+      The .py file which contains the code for the DQN agent.
   * Net.py : 
   
       The .py file which contains the neural network structure.
@@ -30,17 +30,14 @@ Here is a list for all files in this project:
   * train.py : 
   
       The .py file which contains the function that can be used to train the agent.
-  * Navigation_train.ipynb :
+  * Navigation_train_DQN.ipynb :
   
-      The jupyter notebook file I actually used to train the agent. It also contains the code for training with each algorithm
+      The jupyter notebook file I actually used to train the DQN agent. It also contains the code for training with each algorithm
+      
+  * Navigation_train_PPO.ipynb :
+  
+      The jupyter notebook file I actually used to train the PPO agent. It used two methods to calculate the expected reward. It seems that TD is more stable than MC.
+      
   * Report.pdf :
   
-      A report of my experiments. Still updating. But I guess not many people will actually read that. So I listed the future interests here   
-  * Future Plan/ On going:
-      Speed up Prioritized DQN
-      
-      Implement Double DQN
-      
-      Implement Rainbow
-      
-      Implement olicy gradient (Working on it)
+      A report of my experiments. Mostly about implement of different DQN.
