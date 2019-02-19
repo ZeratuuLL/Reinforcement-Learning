@@ -18,18 +18,7 @@ Here is a list for all files in this project:
   * Navigation.ipynb :
   
       The jupyter notebook file which provides an example of using this environment. You can also watch the performance of a trained agent with it.
-  * RL_Agent.py : 
-  
-      The .py file which contains the code for the DQN agent.
-  * Net.py : 
-  
-      The .py file which contains the neural network structure.
-  * : chechpoint.pth
-  
-      The .pth file (created by ```torch.save()```) which saves the weights of a trained agent. Not using the Dual structure
-  * train.py : 
-  
-      The .py file which contains the function that can be used to train the agent.
+ 
   * Navigation_train_DQN.ipynb :
   
       The jupyter notebook file I actually used to train the DQN agent. It also contains the code for training with each algorithm
@@ -38,6 +27,14 @@ Here is a list for all files in this project:
   
       The jupyter notebook file I actually used to train the PPO agent. It used two methods to calculate the expected reward. It seems that TD is more stable than MC.
       
+  * Navigation_train_SQN.ipynb:
+  
+      The jupyter notebook file I actually used to train the SQN agent. It used two methods to calculate the expected reward. It seems that TD is more stable than MC. You can check the reference [here](https://arxiv.org/pdf/1702.08165.pdf)
+      
   * Report.pdf :
   
-      A report of my experiments. Mostly about implement of different DQN.
+      A report of my experiments. Mostly about implement of different DQNs.
+      
+  * Checkpoints:
+  
+      A folder saving different trained weights for multiple agents. More details inside.
