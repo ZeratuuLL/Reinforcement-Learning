@@ -37,13 +37,27 @@ to train on my remote server.
 
 ## Crawler
 
-Later I will explain this when I get to work on this.
+In this environment our agent is a creature with 4 arms and 4 forearms. Each agent has 129-dimension observation (state) and a 20-dimension action. There are 12 agents in the provided environment.
+
+The reward is shaped according to the velocity:
+  * +0.03 times body velocity in the goal direction.
+  * +0.01 times body direction alignment with goal direction.
+
+### Download Environment
+
+  * [Linux](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Crawler/Crawler_Linux.zip)
+  * [Mac OSX](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Crawler/Crawler.app.zip)
+  * [Windows 32-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Crawler/Crawler_Windows_x86.zip)
+  * [Windows 64-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Crawler/Crawler_Windows_x86_64.zip)
+  * [Headless Mode](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Crawler/Crawler_Linux_NoVis.zip)
 
 ## Folders
 
 In the **DDPG** folder you can find the some plots which should help you understand the result and my findings in implementing DDPG algorithm. The saved weights for the trained agent is also there.
 
+In the **PPO** folder you can find a jupyter notebook which uses PPO to solve the reacher environment. There is also a checkpoint.pth file which is the trained weights. There is also another jupyter notebook which try to solve crawler environment using PPO. It is extremely slow if trained without a GPU. I actually trained on a server so there is no result in the notebook.
+
 ## .py files
   * **infrasturctures.py** contains some basic ingredients for the experiment, including networks, noise generator, replaybuffer and so on
   * **DDPG.py** is the file you can use to train the agent. Please pass in parameters follow the descriptions in the file
-  * **agents.py** contains codes for different kind of agents. The agents are defined as class. They can initiailze themselves, take actions, learn from past experiments and train themselves. For now there is only a DDPG agent. 
+  * **agents.py** contains codes for different kind of agents. The agents are defined as class. They can initiailze themselves, take actions, learn from past experiments and train themselves. For now there are DDPG and PPO agents
