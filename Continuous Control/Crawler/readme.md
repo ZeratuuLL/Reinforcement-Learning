@@ -12,3 +12,4 @@ Something to remind in the end:
   * For each episode I required 3000 steps to collect data to learn from. If this number is too small the training will be much worse (I tried 1500)
   * During training I test the agent every 50 episodes and roll back to the saved one if the current one cannot out-perform it. I test the agent for 1500 timesteps and repeated 20 times for an average.
   * Somehow the whole environment crushed some time during training so I don't have the saved rewards history nor know how many episodes it takes to arrive this. But from the recorded time it should be around 700-800 episodes.
+  * During training sometimes you will receive ```nan``` rewards. I do not know the reason behind this. But I am not it's not due to ```nan``` in actions since there was none. To deal with that everystep I checked the reward and replace all ```nan``` by -5 so that the agent will learn to avoid that.
