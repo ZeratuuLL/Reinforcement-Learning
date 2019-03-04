@@ -1,4 +1,4 @@
-This folder saves the files related to training Crawler with a **fixed** goal. The benchmark given by Unity is 2000. Currently I am only getting 1200~1300.
+This folder saves the files related to training Crawler with a **fixed** goal. The benchmark given by Unity is 2000. Currently I am only getting 1700~1800. You can see the rewards for 12 agents in the jupyter notebook. It's very close to the benchmark. It seems that the most influencial hyperparameter is the learning rate.
 
 My agent somehow learns to use two feets to move/accelerate and uses the other two to prevent falling. This is quite different from the [illustration provided by Unity](https://www.youtube.com/watch?v=ftLliaeooYI&feature=youtu.be). My guess is that this environment is adjusted somehow by Udacity team (you can see the input dimension is 129, but the [original version](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#crawler) is 117).
 
