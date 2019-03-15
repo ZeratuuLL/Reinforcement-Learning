@@ -8,4 +8,6 @@ When $n$ is small this is quite easy. But when $n$ grows large, random explorati
 
   * Enhance exploration by some methods such as bringing in Curiosity. For example [this paper](https://pathak22.github.io/noreward-rl/resources/icml17.pdf). In the future I will check the efficiency of this
   * Use model based algorithms. This makes the problem a search problem, given the assumption that the model generalizes well to unseen states.
-  * Add special 'fake' but 'valid' experiences and learn from them with offline learning methods. This is the idea of \textbf{hindsight experience replay}.
+  * Add special 'fake' but 'valid' experiences and learn from them with offline learning methods. This is the idea of **hindsight experience replay**. For more details you can check in the original paper by OpenAI.
+  
+## Algorithm
