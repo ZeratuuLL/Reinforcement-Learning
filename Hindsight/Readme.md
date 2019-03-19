@@ -8,6 +8,12 @@ When $n$ is small this is quite easy. But when $n$ grows large, random explorati
 
   * Enhance exploration by some methods such as bringing in Curiosity. For example [this paper](https://pathak22.github.io/noreward-rl/resources/icml17.pdf). In the future I will check the efficiency of this
   * Use model based algorithms. This makes the problem a search problem, given the assumption that the model generalizes well to unseen states.
-  * Add special 'fake' but 'valid' experiences and learn from them with offline learning methods. This is the idea of **hindsight experience replay**. For more details you can check in the original paper by OpenAI.
+  * Add special 'fake' but 'valid' experiences and learn from them with offline learning methods. This is the idea of **hindsight experience replay**. For more details you can check in the [original paper by OpenAI](https://arxiv.org/abs/1707.01495).
   
 ## Algorithm
+
+So how should we add fake but valid experiences? We should create transitions will various reward signals and guarantee that they still follow the dynamic of the environment. To achieve this we must know the true reward function. Luckily this is usually true for lower level worker in hierarchical reinforcement learning. But we don't need the transition dynamic because we can make use of the real experiences. The only thing we modify is the goal in experiences and the reward accordingly. 
+
+In the paper, it's mentioned that we can have a function to generate a set of 'additional goals' based on any experiences from an episode. Then we will create a new but illusional episode by replacing the goal with one goal in 'additional goals' we generated. These new experiences will be added into replay buffer and helps training. If you wonder how to generate 'additional' goals, the simplest method is to return the final state as an additional goal
+
+In the jupyter notebook, I implemented this in a slightly different way
