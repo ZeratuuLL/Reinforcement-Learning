@@ -19,3 +19,7 @@ In the paper, it's mentioned that we can have a function to generate a set of 'a
 In the jupyter notebook, I implemented this in a slightly different way. Say in an episode we have state trajectory S(1), S(2),... S(n). My implement chooses some time between 1 to n, which we can call t(1)=1, t(2), ... t(k)=n. For each i from {2, 3, ..., n}, I set the goals from time t(i-1) to t(i) as s(i) and change the rewards accordingly. This will guarantee the new experience has k successful trajectories. The proportion k/n is a parameter that we can choose.
 
 For more details about the environment and experiment results please check the jupyter notebook.
+
+## Future
+
+Now I am working on extending this method to PPO. The authors HER did not mention this in their paper since PPO does not make use of a replay buffer explicitly. But actually for each episode PPO have a temporary replay buffer. I will update this part when time comes
