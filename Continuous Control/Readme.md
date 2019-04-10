@@ -53,9 +53,13 @@ The reward is shaped according to the velocity:
 
 ## Folders
 
+In the **Crawler** folder I tried different methods to solve a harder environment, which has around 130 input dimensions and 20 output dimensions. Please check details inside.
+
 In the **DDPG** folder you can find the some plots which should help you understand the result and my findings in implementing DDPG algorithm. The saved weights for the trained agent is also there.
 
-In the **PPO** folder you can find a jupyter notebook which uses PPO to solve the reacher environment. There is also a checkpoint.pth file which is the trained weights. There is also another jupyter notebook which try to solve crawler environment using PPO. It is extremely slow if trained without a GPU. I actually trained on a server so there is no result in the notebook.
+In the **PPO** folder you can find a jupyter notebook which uses PPO to solve the reacher environment. There is also a checkpoint.pth file which is the trained weights. 
+
+In the **SAC** folder you can find a jupyter notebook which uses SAC, soft actor critic, to solve the reacher environment. But there is no saved weights. It's very easy to train even on a single CPU.
 
 ## .py files
   * **infrasturctures.py** contains some basic ingredients for the experiment, including networks, noise generator, replaybuffer and so on
