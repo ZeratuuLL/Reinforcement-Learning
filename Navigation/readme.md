@@ -6,7 +6,7 @@ In this implement I did not use the raw pixel inputs. Instead I used a 37-dimens
 
 To compare the effectiveness and robustness for each algorithm, I tuned the hyperparameters in a small range and let each run 15 times, with each time lasting 1000 episodes and record their means of the past 100 episodes as well as their episodic rewards. I visualize the trajectory of means, confidence interval of means as well as its upper and lower bound. Hopefully this can provide a better understanding of the whole picture.
 
-In this experiment we can see (some results to be filled). I also explored these algorithms on LunarLander-v2 environment in gym. The results seems to be somehow different. You can check it in the other directory.
+In this experiment we can see (some results to be filled). I also explored these algorithms on LunarLander-v2 environment in gym, which is implemented with tensorflow instead of pytorch. The results seems to be somehow different. You can check it in the other directory.
 
 For downloading the agents, here are the options:
   * [Linux](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux.zip)
