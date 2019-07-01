@@ -4,7 +4,7 @@ Here there is only one agent navigating itself towards yellow bananas, which giv
 
 In this implement I did not use the raw pixel inputs. Instead I used a 37-dimension state information provided by the environment, containing the agent's velocity, along with ray-based perception of objects around the agent's forward direction. The agent learns to get higher reward with this information. This problem is considered solved if the agent could get an average reward larger than 13 over a consecutive 100 episodes.
 
-To compare the effectiveness and robustness for each algorithm, I tuned the hyperparameters in a small range and let each run 15 times, with each time lasting 1000 episodes and record their means of the past 100 episodes as well as their episodic rewards. I visualize the trajectory of means, confidence interval of means as well as its upper and lower bound. Hopefully this can provide a better understanding of the whole picture.
+To compare the effectiveness and robustness for each algorithm, I tuned the hyperparameters in a small range (should not be bad) and let each run 15 times, with each time lasting 1000 episodes and record their means of the past 100 episodes (called moving average later) as well as their episodic rewards. I visualize the trajectory of means, confidence interval as well as upper and lower bound for both moving average and episodic rewards. Hopefully this can provide a better understanding of the whole picture.
 
 In this experiment we can see (some results to be filled). I also explored these algorithms on LunarLander-v2 environment in gym, which is implemented with tensorflow instead of pytorch. The results seems to be somehow different. You can check it in the other directory.
 
@@ -41,4 +41,4 @@ Here is a list for all files in this project:
       
   * Checkpoints:
   
-      A folder saving different trained weights for multiple agents. More details inside.
+      A folder saving different trained weights for multiple agents. Now I have commented the line which saves the agents' weights. More details inside.
