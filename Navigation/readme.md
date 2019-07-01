@@ -4,6 +4,10 @@ Here there is only one agent navigating itself towards yellow bananas, which giv
 
 In this implement I did not use the raw pixel inputs. Instead I used a 37-dimension state information provided by the environment, containing the agent's velocity, along with ray-based perception of objects around the agent's forward direction. The agent learns to get higher reward with this information. This problem is considered solved if the agent could get an average reward larger than 13 over a consecutive 100 episodes.
 
+To compare the effectiveness and robustness for each algorithm, I tuned the hyperparameters in a small range and let each run 15 times, with each time lasting 1000 episodes and record their means of the past 100 episodes as well as their episodic rewards. I visualize the trajectory of means, confidence interval of means as well as its upper and lower bound. Hopefully this can provide a better understanding of the whole picture.
+
+In this experiment we can see (some results to be filled). I also explored these algorithms on LunarLander-v2 environment in gym. The results seems to be somehow different. You can check it in the other directory.
+
 For downloading the agents, here are the options:
   * [Linux](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux.zip)
   * [MaxOSX](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana.app.zip)
@@ -29,7 +33,7 @@ Here is a list for all files in this project:
       
   * Navigation_train_SQN.ipynb:
   
-      The jupyter notebook file I actually used to train the SQN agent. It used two methods to calculate the expected reward. It seems that TD is more stable than MC. You can check the reference [here](https://arxiv.org/pdf/1702.08165.pdf)
+      The jupyter notebook file I actually used to train the SQN agent. You can check the reference [here](https://arxiv.org/pdf/1702.08165.pdf)
       
   * Report.pdf :
   
